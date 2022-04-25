@@ -2,6 +2,16 @@
 #include <LiquidCrystal.h>
 #include <dht.h>
 #define dht_apin A0
+#include <Servo.h> 
+// Declare the Servo pin 
+int servoPin = 7;
+int servoPin2 = 10; 
+// Create a servo object 
+Servo Servo1;
+Servo Servo2; 
+int sensor = 6;
+int val = 0;
+bool isON = false;
 
 // initialize the library by associating any needed LCD interface pin
 // with the arduino pin number it is connected to
@@ -11,20 +21,20 @@ dht DHT;
 char line0[21]; 
 char line1[21];
 
-//02 / 27 / 2022
+//04 / 29 / 2022
 //Enter Today's current numerical month
-int month = 3;
+int month = 4;
 //Enter Today's current numerical day
-int day = 1;
+int day = 29;
 //Enter Today's current numerical year
 int year = 2022;
   
 
 //03 : 30 PM  
 //Enter Today's current numerical hour
-int hour = 5;
+int hour = 3;
 //Enter Today's current numerical minute
-int minute = 44;
+int minute = 30;
 //Enter PM or AM
 String m = "PM";
 
@@ -39,6 +49,12 @@ void setup() {
   Serial.begin(9600);
   line0[4] = 8; 
   line0[5] = 5; 
+  Servo1.attach(servoPin); 
+  Servo2.attach(servoPin2); 
+  pinMode(sensor, INPUT);    
+  Serial.begin(9600); 
+  Servo1.write(180);
+  Servo2.write(0);
 }
 
 void updateDisplay() {
@@ -127,20 +143,34 @@ void timeDisplay(){
 }
 
 void loop() {
-  tick += 1;
-  int task = tick / 200 % 4;
-  switch (task) {
-    case 0:
-      temperatureDisplay();
-      break;
-    case 1:
-      humidityDisplay();
-      break;
-    case 2:
-      dateDisplay();
-      break;
-    case 3:
-      timeDisplay();
-      break;
+  val = digitalRead(sensor);
+  if(val == HIGH && isON != true){
+    isON = true;
+    Servo1.write(9
+    |0);
+    Servo2.write(180);
+    delay(2000);
   }
+  else if(val == HIGH && isON == true){
+    Servo1.write(180);
+    Servo2.write(0);
+    isON = false;
+    delay(2000);
+  }
+    tick += 1;
+    int task = tick / 200 % 4;
+    switch (task) {
+      case 0:
+        temperatureDisplay();
+        break;
+      case 1:
+        humidityDisplay();
+        break;
+      case 2:
+        dateDisplay();
+        break;
+      case 3:
+        timeDisplay();
+        break;
+    }
 }
