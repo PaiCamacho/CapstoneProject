@@ -146,8 +146,7 @@ void loop() {
   val = digitalRead(sensor);
   if(val == HIGH && isON != true){
     isON = true;
-    Servo1.write(9
-    |0);
+    Servo1.write(0);
     Servo2.write(180);
     delay(2000);
   }
